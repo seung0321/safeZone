@@ -1,0 +1,7 @@
+# Local files
+node_modules/
+.env*
+!.env.example
+build/
+http/
+
