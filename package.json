@@ -1,8 +1,7 @@
 {
    "scripts": {
-      "start": "node ./build/app.js",
-      "build": "tsc",
-      "dev": "nodemon ./src/app.ts --watch ./src"
+    "start": "node ./src/app.js",
+    "dev": "nodemon ./src/app.js"
    },
    "dependencies": {
       "@prisma/client": "^6.16.2",
@@ -15,17 +14,11 @@
       "uuid": "^13.0.0"
    },
    "devDependencies": {
-      "@types/bcrypt": "^6.0.0",
-      "@types/cors": "^2.8.19",
-      "@types/express": "^5.0.3",
-      "@types/node": "^24.5.2",
       "cross-env": "^10.0.0",
       "nodemon": "^3.1.10",
-      "prisma": "^6.16.2",
-      "ts-node": "^10.9.2",
-      "typescript": "^5.9.2"
+      "prisma": "^6.16.2"
    },
    "prisma": {
-      "seed": "ts-node prisma/seed.ts"
+      "seed": "node prisma/seed.js"
    }
 }
