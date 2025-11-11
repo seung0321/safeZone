@@ -9,4 +9,4 @@ class ConflictError extends Error {
     this.error = "Conflict";
   }
 }
-export { ConflictError };
+export default ConflictError ;
