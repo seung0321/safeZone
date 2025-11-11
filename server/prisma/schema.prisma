@@ -23,6 +23,21 @@ model User {
   locations    UserLocation[]
 }
 
+model EmailVerification {
+  id          Int       @id @default(autoincrement())
+  email       String    @unique           
+  code        String                           
+  purpose     VerificationPurpose                
+  isVerified  Boolean   @default(false)     
+  expiresAt   DateTime                           
+  createdAt   DateTime  @default(now())         
+}
+
+enum VerificationPurpose {
+  signup
+  reset_password
+}
+
 model Bord {
   id         Int       @id @default(autoincrement())
   userId     Int    

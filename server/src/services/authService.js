@@ -22,10 +22,10 @@ export const register = async (data) => {
     address,
     password: hashed,
   });
-
+  const { accessToken, refreshToken } = generateTokens(user.id);
   await userRepository.updateRefreshToken(user.id, refreshToken);
 
-  return { message: '회원가입 완료' };
+  return { message: '회원가입 완료', tokens: { accessToken, refreshToken } };
 };
 
 export const login = async ({ email, password }) => {
@@ -73,7 +73,7 @@ export const findId = async (email) => {
   return { message: '이미 회원가입 된 이메일입니다.', name: user.name };
 };
 
-export const resetPassword = async ({email, newPassword}) => {
+export const resetPassword = async ({ email, newPassword }) => {
   const user = await userRepository.findByEmail(email);
   if (!user) throw new NotFoundError('등록된 이메일이 없습니다.');
   const hashed = await hashPassword(newPassword);
