@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import authRouter from './routes/authRouter.js';
 import userRouter from './routes/userRouter.js';
 import bordRouter from './routes/bordRouter.js';
+import commentRouter from './routes/commentRouter.js'
 import { globalErrorHandler } from './controllers/errorController.js';
 dotenv.config();
 const app = express();
@@ -13,7 +14,8 @@ app.use(express.json());
 
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
-app.use('/api/bords', bordRouter)
+app.use('/api/bords', bordRouter);
+app.use('/api/comments', commentRouter);
 
 app.use(globalErrorHandler);
 
