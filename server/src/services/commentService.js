@@ -9,7 +9,6 @@ export const createComment = async ({ bordId, userId, content, parentId }) => {
     throw new BadRequestError('댓글 내용을 입력해주세요.');
   }
 
-  // 게시글 존재 여부 확인
   const bord = await bordRepository.findBordById(bordId);
   if (!bord) {
     throw new NotFoundError('게시글을 찾을 수 없습니다.');

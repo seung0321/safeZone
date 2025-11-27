@@ -641,7 +641,7 @@ paths:
                 purpose:
                   type: string
                   enum: [signup, reset_password]
-                  example: reset_password
+                  example: signup
       responses:
         '200':
           description: 인증코드 발송 완료
@@ -678,7 +678,7 @@ paths:
                 purpose:
                   type: string
                   enum: [signup, reset_password]
-                  example: reset_password
+                  example: signup
       responses:
         '200':
           description: 인증 성공
