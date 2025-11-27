@@ -6,8 +6,8 @@ info:
     SafeProject 커뮤니티/인증/유저 API 명세서
 
 servers:
-  - url: http://localhost:3000
-    description: Local server
+  - url: https://safezone-h0u2.onrender.com
+    description: Render server
 
 tags:
   - name: Auth
