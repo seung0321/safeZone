@@ -7,7 +7,11 @@ export const sendVerificationCode = async (email, purpose) => {
   const expiresAt = new Date(Date.now() + 1000 * 60 * 3);
 
   await saveCode(email, code, purpose, expiresAt);
-  await sendEmail(email, `인증코드: ${code}`);
+
+  const subject = '[SafeZone] 이메일 인증 코드 안내';
+  const text = `요청하신 인증 코드는 ${code} 입니다.\n\n5분 이내에 입력해주세요.`;
+
+  await sendEmail(email, subject, text);
 
   return { message: '인증코드가 이메일로 전송되었습니다.' };
 };
