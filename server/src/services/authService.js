@@ -1,15 +1,21 @@
 import * as userRepository from '../repositories/userRepository.js';
 import { hashPassword, comparePassword } from '../lib/utils/bcrypt.js';
 import { generateTokens, verifyRefreshToken } from '../lib/utils/jwt.js';
+import { findCode } from '../repositories/emailRepository.js';
 import ConflictError from '../lib/errors/ConflictError.js';
 import UnauthorizedError from '../lib/errors/UnauthorizedError.js';
 import NotFoundError from '../lib/errors/NotFoundError.js';
+import BadRequestError from '../lib/errors/BadRequestError.js';
 
 export const register = async (data) => {
   const { name, nickname, email, address, password } = data;
 
   const emailExisting = await userRepository.findByEmail(email);
   if (emailExisting) throw new ConflictError('이미 존재하는 이메일입니다.');
+
+  const emailRecord = await findCode(email);
+  if (!emailRecord || !emailRecord.isVerified)
+    throw new BadRequestError('이메일 인증이 필요합니다.');
 
   const nicknameExisting = await userRepository.findByNickname(nickname);
   if (nicknameExisting) throw new ConflictError('이미 존재하는 닉네임입니다.');
@@ -76,6 +82,12 @@ export const findId = async (email) => {
 export const resetPassword = async ({ email, newPassword }) => {
   const user = await userRepository.findByEmail(email);
   if (!user) throw new NotFoundError('등록된 이메일이 없습니다.');
+
+  const emailRecord = await findCode(email, 'reset_password');
+
+  if (!emailRecord || !emailRecord.isVerified)
+    throw new BadRequestError('비밀번호 재설정을 위한 이메일 인증이 필요합니다.');
+
   const hashed = await hashPassword(newPassword);
   await userRepository.updatePassword(user.id, hashed);
   return { message: '비밀번호가 재설정되었습니다.' };

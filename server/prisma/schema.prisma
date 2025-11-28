@@ -25,7 +25,7 @@ model User {
 
 model EmailVerification {
   id          Int       @id @default(autoincrement())
-  email       String    @unique           
+  email       String               
   code        String                           
   purpose     VerificationPurpose                
   isVerified  Boolean   @default(false)     
@@ -48,8 +48,10 @@ model Bord {
   createdAt  DateTime  @default(now())
   updatedAt  DateTime @updatedAt
 
-  
   comments   Comment[]
+
+  searchTitle   String  @default("")
+  searchContent String  @default("")
 }
 
 model Comment {
@@ -62,7 +64,7 @@ model Comment {
   updatedAt DateTime? @updatedAt
 
   authorUser User     @relation(fields: [userId], references: [id])
-  bords      Bord      @relation(fields: [bordId], references: [id])
+  bords      Bord      @relation(fields: [bordId], references: [id], onDelete: Cascade)
   parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
   replies   Comment[] @relation("CommentReplies")
 }
