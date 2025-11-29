@@ -156,9 +156,6 @@ components:
           type: string
           format: email
           example: testuser@example.com
-        address:
-          type: string
-          example: Test City, Test Country
         createdAt:
           type: string
           format: date-time
@@ -707,7 +704,7 @@ paths:
           application/json:
             schema:
               type: object
-              required: [name, nickname, email, address, password, confirmPassword]
+              required: [name, nickname, email, password, confirmPassword]
               properties:
                 name:
                   type: string
@@ -719,9 +716,6 @@ paths:
                   type: string
                   format: email
                   example: testuser@example.com
-                address:
-                  type: string
-                  example: Test City, Test Country
                 password:
                   type: string
                   format: password
@@ -1028,9 +1022,6 @@ paths:
                 nickname:
                   type: string
                   example: testUserUpdated
-                address:
-                  type: string
-                  example: Updated City, Test Country
       responses:
         '200':
           description: 내 정보 수정 성공

@@ -8,8 +8,7 @@ const registerSchema = refine(
   object({
     name: size(string(), 1, 10),             
     nickname: size(string(), 1, 15),        
-    email: pattern(string(), emailRegex),
-    address: size(string(), 1, 50),          
+    email: pattern(string(), emailRegex),   
     password: pattern(string(), passwordRegex), 
     confirmPassword: string(),              
   }),
@@ -33,9 +32,6 @@ export const validateRegisterData = (data) => {
         break;
       case 'email':
         message = '이메일 형식이 올바르지 않습니다.';
-        break;
-      case 'address':
-        message = '주소는 1~50자 이내로 입력해야 합니다.';
         break;
       case 'password':
         message = '비밀번호는 영문과 특수문자를 포함한 8~16자여야 합니다.';
