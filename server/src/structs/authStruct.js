@@ -1,8 +1,9 @@
-import { object, string, size, pattern, refine, validate } from 'superstruct';
+import { object, string, size, pattern, refine, validate, number } from 'superstruct';
 import BadRequestError from '../lib/errors/BadRequestError.js';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,16}$/;
+const phoneRegex = /^01[0-9]{8,9}$/;
 
 const registerSchema = refine(
   object({
@@ -10,7 +11,8 @@ const registerSchema = refine(
     nickname: size(string(), 1, 15),        
     email: pattern(string(), emailRegex),   
     password: pattern(string(), passwordRegex), 
-    confirmPassword: string(),              
+    confirmPassword: string(),
+    phone: pattern(string(), phoneRegex),           
   }),
   'PasswordMatch',
   (value) => value.password === value.confirmPassword
@@ -41,6 +43,9 @@ export const validateRegisterData = (data) => {
         break;
       case 'PasswordMatch':
         message = '비밀번호가 일치하지 않습니다.';
+        break;
+      case 'phone':
+        message = '정확한 핸드폰 번호를 입력해주세요.';
         break;
       default:
         message = error.message;

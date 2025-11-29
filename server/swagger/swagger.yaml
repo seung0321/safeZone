@@ -156,6 +156,9 @@ components:
           type: string
           format: email
           example: testuser@example.com
+        phone:
+          type: number
+          example: 01012341234
         createdAt:
           type: string
           format: date-time
@@ -704,7 +707,7 @@ paths:
           application/json:
             schema:
               type: object
-              required: [name, nickname, email, password, confirmPassword]
+              required: [name, nickname, email, password, confirmPassword, phone]
               properties:
                 name:
                   type: string
@@ -724,6 +727,9 @@ paths:
                   type: string
                   format: password
                   example: Testpass123!
+                phone:
+                  type: number
+                  example: 01012341234
       responses:
         '201':
           description: 회원가입 성공
@@ -1022,6 +1028,9 @@ paths:
                 nickname:
                   type: string
                   example: testUserUpdated
+                phone:
+                  type: number
+                  example: 01012341234
       responses:
         '200':
           description: 내 정보 수정 성공
