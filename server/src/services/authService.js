@@ -8,7 +8,7 @@ import NotFoundError from '../lib/errors/NotFoundError.js';
 import BadRequestError from '../lib/errors/BadRequestError.js';
 
 export const register = async (data) => {
-  const { name, nickname, email, address, password } = data;
+  const { name, nickname, email, password, phone } = data;
 
   const emailExisting = await userRepository.findByEmail(email);
   if (emailExisting) throw new ConflictError('이미 존재하는 이메일입니다.');
@@ -25,8 +25,8 @@ export const register = async (data) => {
     name,
     nickname,
     email,
-    address,
     password: hashed,
+    phone,
   });
   const { accessToken, refreshToken } = generateTokens(user.id);
   await userRepository.updateRefreshToken(user.id, refreshToken);

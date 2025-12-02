@@ -25,3 +25,36 @@ export const updateUserInfo = (userId, data) =>
 
 export const deleteUser = (userId) =>
   prisma.user.delete({ where: { id: userId } });
+
+// Emergency contacts
+export const findContactsByUser = (userId) =>
+  prisma.emergencyContact.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+  });
+
+export const findContactById = (contactId) =>
+  prisma.emergencyContact.findUnique({
+    where: { id: contactId },
+  });
+
+export const findContactByPhone = (userId, phone) =>
+  prisma.emergencyContact.findFirst({
+    where: { userId, phone },
+  });
+
+export const createContact = ({ userId, name, phone }) =>
+  prisma.emergencyContact.create({
+    data: { userId, name, phone },
+  });
+
+export const updateContact = (contactId, data) =>
+  prisma.emergencyContact.update({
+    where: { id: contactId },
+    data,
+  });
+
+export const deleteContact = (contactId) =>
+  prisma.emergencyContact.delete({
+    where: { id: contactId },
+  });

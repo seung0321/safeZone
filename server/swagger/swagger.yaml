@@ -156,9 +156,31 @@ components:
           type: string
           format: email
           example: testuser@example.com
-        address:
+        phone:
+          type: number
+          example: 01012341234
+        createdAt:
           type: string
-          example: Test City, Test Country
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    EmergencyContact:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        userId:
+          type: integer
+          example: 3
+        name:
+          type: string
+          example: 비상연락망 담당자
+        phone:
+          type: string
+          example: 01098765432
         createdAt:
           type: string
           format: date-time
@@ -707,7 +729,7 @@ paths:
           application/json:
             schema:
               type: object
-              required: [name, nickname, email, address, password, confirmPassword]
+              required: [name, nickname, email, password, confirmPassword, phone]
               properties:
                 name:
                   type: string
@@ -719,9 +741,6 @@ paths:
                   type: string
                   format: email
                   example: testuser@example.com
-                address:
-                  type: string
-                  example: Test City, Test Country
                 password:
                   type: string
                   format: password
@@ -730,6 +749,9 @@ paths:
                   type: string
                   format: password
                   example: Testpass123!
+                phone:
+                  type: number
+                  example: 01012341234
       responses:
         '201':
           description: 회원가입 성공
@@ -1028,18 +1050,24 @@ paths:
                 nickname:
                   type: string
                   example: testUserUpdated
-                address:
+                phone:
                   type: string
-                  example: Updated City, Test Country
+                  example: 01012341234
       responses:
         '200':
           description: 내 정보 수정 성공
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 정보 수정 완료
+                  profile:
+                    $ref: '#/components/schemas/User'
         '400':
-          description: 잘못된 요청 (닉네임/주소 형식 오류 등)
+          description: 잘못된 요청 (닉네임/번호 형식 오류 등)
           content:
             application/json:
               schema:
@@ -1065,8 +1093,16 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '204':
+        '200':
           description: 회원 탈퇴 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 회원 탈퇴 완료
         '401':
           description: 인증 필요 (액세스 토큰 누락 또는 유효하지 않은 경우)
           content:
@@ -1077,3 +1113,202 @@ paths:
                 statusCode: 401
                 error: Unauthorized
                 message: 인증이 필요합니다.
+
+  /api/users/contacts:
+    get:
+      tags: [Users]
+      summary: 비상 연락처 전체 조회
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: 사용자 비상 연락처 목록
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EmergencyContact'
+        '401':
+          description: 인증 필요 (액세스 토큰 누락 또는 유효하지 않은 경우)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 401
+                error: Unauthorized
+                message: 인증이 필요합니다.
+
+    post:
+      tags: [Users]
+      summary: 비상 연락처 추가
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, phone]
+              properties:
+                name:
+                  type: string
+                  example: 가족
+                phone:
+                  type: string
+                  example: 01012341234
+      responses:
+        '201':
+          description: 비상 연락처 등록 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmergencyContact'
+        '400':
+          description: 잘못된 요청 (필수값 누락, 번호 형식 오류, 중복 번호 등)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 400
+                error: BadRequest
+                message: 정확한 핸드폰 번호를 입력해주세요.
+        '401':
+          description: 인증 필요 (액세스 토큰 누락 또는 유효하지 않은 경우)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 401
+                error: Unauthorized
+                message: 인증이 필요합니다.
+
+  /api/users/contacts/{contactId}:
+    patch:
+      tags: [Users]
+      summary: 비상 연락처 수정
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: contactId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 직장 동료
+                phone:
+                  type: string
+                  example: 01055556666
+      responses:
+        '200':
+          description: 비상 연락처 수정 성공
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmergencyContact'
+        '400':
+          description: 잘못된 요청 (값 미입력, 번호 형식 오류, 중복 번호 등)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 400
+                error: BadRequest
+                message: 수정할 값을 입력해주세요.
+        '401':
+          description: 인증 필요 (액세스 토큰 누락 또는 유효하지 않은 경우)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 401
+                error: Unauthorized
+                message: 인증이 필요합니다.
+        '403':
+          description: 수정 권한 없음 (본인 연락처가 아닌 경우)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: 연락처 수정 권한이 없습니다.
+        '404':
+          description: 연락처를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 404
+                error: NotFound
+                message: 연락처를 찾을 수 없습니다.
+
+    delete:
+      tags: [Users]
+      summary: 비상 연락처 삭제
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: contactId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 비상 연락처 삭제 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 연락처가 삭제되었습니다.
+        '401':
+          description: 인증 필요 (액세스 토큰 누락 또는 유효하지 않은 경우)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 401
+                error: Unauthorized
+                message: 인증이 필요합니다.
+        '403':
+          description: 삭제 권한 없음 (본인 연락처가 아닌 경우)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 403
+                error: Forbidden
+                message: 연락처 삭제 권한이 없습니다.
+        '404':
+          description: 연락처를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                statusCode: 404
+                error: NotFound
+                message: 연락처를 찾을 수 없습니다.

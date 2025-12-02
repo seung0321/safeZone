@@ -1,17 +1,18 @@
-import { object, string, size, pattern, refine, validate } from 'superstruct';
+import { object, string, size, pattern, refine, validate, number } from 'superstruct';
 import BadRequestError from '../lib/errors/BadRequestError.js';
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,16}$/;
+const phoneRegex = /^01[0-9]{8,9}$/;
 
 const registerSchema = refine(
   object({
     name: size(string(), 1, 10),             
     nickname: size(string(), 1, 15),        
-    email: pattern(string(), emailRegex),
-    address: size(string(), 1, 50),          
+    email: pattern(string(), emailRegex),   
     password: pattern(string(), passwordRegex), 
-    confirmPassword: string(),              
+    confirmPassword: string(),
+    phone: pattern(string(), phoneRegex),           
   }),
   'PasswordMatch',
   (value) => value.password === value.confirmPassword
@@ -34,9 +35,6 @@ export const validateRegisterData = (data) => {
       case 'email':
         message = '이메일 형식이 올바르지 않습니다.';
         break;
-      case 'address':
-        message = '주소는 1~50자 이내로 입력해야 합니다.';
-        break;
       case 'password':
         message = '비밀번호는 영문과 특수문자를 포함한 8~16자여야 합니다.';
         break;
@@ -45,6 +43,9 @@ export const validateRegisterData = (data) => {
         break;
       case 'PasswordMatch':
         message = '비밀번호가 일치하지 않습니다.';
+        break;
+      case 'phone':
+        message = '정확한 핸드폰 번호를 입력해주세요.';
         break;
       default:
         message = error.message;

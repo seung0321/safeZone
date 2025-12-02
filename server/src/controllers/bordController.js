@@ -30,7 +30,7 @@ export const getBordDetail = async (req, res, next) => {
 
 export const createBord = async (req, res, next) => {
   try {
-    const userId = req.user.id; // authenticate 미들웨어에서 세팅한 값
+    const userId = req.user.id;
     const { title, content, category } = req.body;
 
     const created = await bordService.createBord({
