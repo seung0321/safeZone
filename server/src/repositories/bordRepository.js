@@ -19,11 +19,11 @@ export const findBords = async ({ skip, take, category, searchType, keyword }) =
         { searchTitle: { contains: normalized } },
         { searchContent: { contains: normalized } },
       ];
-    }else if (searchType === 'author') {
+    } else if (searchType === 'author') {
       where.authorUser = {
         is: {
           nickname: {
-            contains: trimmed
+            contains: trimmed,
           },
         },
       };

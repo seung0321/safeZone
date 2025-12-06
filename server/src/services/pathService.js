@@ -2,10 +2,11 @@ import axios from 'axios';
 import * as turf from '@turf/turf';
 import RBush from 'rbush';
 import * as facilityRepository from '../repositories/facilityRepository.js'; 
-// crimeRepository import는 더 이상 필요 없습니다. (facilityRepository에 합쳤으니까요!)
+import dotenv from 'dotenv';
 
-// ⚠️ 본인의 카카오 API 키 (관리 주의)
-const KAKAO_API_KEY = 'ee090b07b48bc6020cf13c0abf941e13'; 
+dotenv.config();
+
+const KAKAO_API_KEY = process.env.KAKAO_API_KEY; 
 
 const FACILITY_BUFFER_METERS = 25;
 const SCORE_PER_CCTV = 3;    // CCTV 하나당 +3점 (안전)
