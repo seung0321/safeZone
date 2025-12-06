@@ -74,27 +74,35 @@ async function searchLocation(keyword) {
     } catch (e) { return null; }
 }
 
-// [내부 함수] 카카오 도보 길찾기 API
+// pathservice.js의 기존 fetchKakaoPaths 함수를 아래 내용으로 교체하세요.
+
+// [내부 함수] 카카오 도보 길찾기 API (수정됨)
 async function fetchKakaoPaths(start, end) {
     try {
-        const res = await axios.get("https://apis-navi.kakaomobility.com/v1/directions", {
+        // 🚨 엔드포인트를 도보 길찾기 전용인 '/v1/walk'로 변경!
+        const res = await axios.get("https://apis-navi.kakaomobility.com/v1/walk", {
             headers: { 'Authorization': `KakaoAK ${KAKAO_API_KEY}` },
-            params: { 
-                origin: `${start.lon},${start.lat}`, 
-                destination: `${end.lon},${end.lat}`, 
-                priority: "RECOMMEND", 
-                alternatives: true 
+            params: {
+                origin: `${start.lon},${start.lat}`,
+                destination: `${end.lon},${end.lat}`,
+                // 'priority'와 'alternatives'는 도보 길찾기에서 지원하지 않으므로 제거합니다.
             }
         });
-        
+
+        // 도보 API는 여러 대안 경로를 반환하지 않지만, 기존 로직과 호환되도록 map을 사용합니다.
         return res.data.routes.map((route, idx) => {
             const coords = [];
+            // 좌표 추출 방식은 자동차 경로와 동일하게 vertexes를 사용합니다.
             route.sections.forEach(s => s.roads.forEach(r => {
                 for(let i=0; i<r.vertexes.length; i+=2) coords.push([r.vertexes[i], r.vertexes[i+1]]);
             }));
             return { id: idx, summary: route.summary, coordinates: coords };
         });
-    } catch (e) { return []; }
+
+    } catch (e) {
+        console.error("❌ 카카오 도보 길찾기 API 오류:", e.response ? e.response.data : e.message);
+        return [];
+    }
 }
 
 // [내부 함수] 안전 점수 계산 로직
