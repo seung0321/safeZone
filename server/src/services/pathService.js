@@ -162,32 +162,38 @@ function getAlerts(pathCoords) {
 }
 
 // [공개 함수] 메인 로직
-export const getRecommendation = async (startLat, startLon, endKeyword) => {
+export const getRecommendation = async (startLat, startLon, endLat, endLon) => { // 1. endKeyword 대신 endLat, endLon을 받습니다.
     await loadFacilityData();
 
-    const endCoord = await searchLocation(endKeyword);
-    if (!endCoord) throw new Error("목적지를 찾을 수 없습니다.");
-
+    // 2. 목적지 좌표를 이미 알고 있으므로, searchLocation 함수를 호출할 필요가 없습니다.
+    const endCoord = { name: "목적지", lat: parseFloat(endLat), lon: parseFloat(endLon) };
     const startCoord = { name: "현위치", lat: parseFloat(startLat), lon: parseFloat(startLon) };
 
+    console.log(`🚀 도보 경로 탐색 시작: (${startCoord.lat}, ${startCoord.lon}) -> (${endCoord.lat}, ${endCoord.lon})`);
+
+    // 3. 도보 경로를 탐색합니다.
     const paths = await fetchKakaoPaths(startCoord, endCoord);
-    if (!paths.length) throw new Error("경로를 찾을 수 없습니다.");
+    
+    // 경로를 찾지 못한 경우
+    if (!paths.length) {
+        // 이 메시지는 controller에서 잡아서 사용자에게 보여줄 수 있습니다.
+        throw new Error("카카오 API에서 해당 경로의 도보 길찾기 결과를 제공하지 않습니다. 출발지나 목적지가 보행이 불가능한 지역일 수 있습니다.");
+    }
 
-    let bestPath = null;
-    let maxScore = -Infinity;
+    // 도보 API는 일반적으로 하나의 경로만 반환합니다.
+    const theOnlyPath = paths[0];
+    
+    // 점수와 경로 내 경고(alerts)를 계산합니다.
+    theOnlyPath.score = calculateScore(theOnlyPath.coordinates);
+    theOnlyPath.alerts = getAlerts(theOnlyPath.coordinates);
 
-    paths.forEach(p => {
-        p.score = calculateScore(p.coordinates);
-        if(p.score > maxScore) { maxScore = p.score; bestPath = p; }
-    });
+    console.log(`✅ 경로 탐색 완료. 안전 점수: ${theOnlyPath.score}`);
 
+    // 최종 결과 반환
     return {
         start: startCoord,
         end: endCoord,
-        bestPath: { 
-            ...bestPath, 
-            alerts: getAlerts(bestPath.coordinates) 
-        },
-        allPaths: paths
+        bestPath: theOnlyPath,
+        allPaths: paths 
     };
 };
