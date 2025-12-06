@@ -74,27 +74,28 @@ async function searchLocation(keyword) {
     } catch (e) { return null; }
 }
 
-// [내부 함수] 카카오 도보 길찾기 API
+// pathservice.js의 기존 fetchKakaoPaths 함수를 아래 내용으로 교체하세요.
+
 async function fetchKakaoPaths(start, end) {
-    try {
-        const res = await axios.get("https://apis-navi.kakaomobility.com/v1/directions", {
-            headers: { 'Authorization': `KakaoAK ${KAKAO_API_KEY}` },
-            params: { 
-                origin: `${start.lon},${start.lat}`, 
-                destination: `${end.lon},${end.lat}`, 
-                priority: "RECOMMEND", 
-                alternatives: true 
-            }
-        });
-        
-        return res.data.routes.map((route, idx) => {
-            const coords = [];
-            route.sections.forEach(s => s.roads.forEach(r => {
-                for(let i=0; i<r.vertexes.length; i+=2) coords.push([r.vertexes[i], r.vertexes[i+1]]);
-            }));
-            return { id: idx, summary: route.summary, coordinates: coords };
-        });
-    } catch (e) { return []; }
+  const res = await axios.get("https://apis-navi.kakaomobility.com/v1/directions", {
+    headers: { 'Authorization': `KakaoAK ${KAKAO_API_KEY}` },
+    params: { 
+      origin: `${start.lon},${start.lat}`, 
+      destination: `${end.lon},${end.lat}`, 
+      priority: "RECOMMEND", 
+      alternatives: true 
+    }
+  });
+
+  return res.data.routes.map((route, idx) => {
+    const coords = [];
+    route.sections.forEach(s => s.roads.forEach(r => {
+      for(let i=0; i<r.vertexes.length; i+=2) {
+        coords.push([r.vertexes[i], r.vertexes[i+1]]);
+      }
+    }));
+    return { id: idx, summary: route.summary, coordinates: coords };
+  });
 }
 
 // [내부 함수] 안전 점수 계산 로직
