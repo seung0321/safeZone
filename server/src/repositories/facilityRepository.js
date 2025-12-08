@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../lib/utils/prismaClient.js';
 
 // 1. 모든 CCTV 데이터 가져오기
 export const getAllCctvs = async () => {
