@@ -5,6 +5,7 @@
 가장 **안전한 도보 경로**를 계산하고 제공하는 RESTful API입니다.
 
 프론트 바로가기: https://github.com/seung0321/safezone-app
+
 ERD 바로가기: https://www.erdcloud.com/d/5aKC9BeyoefNDB44u
 
 ---
@@ -213,6 +214,7 @@ server/
 ├─ package.json
 └─ README.md
 ```
+
 
 
 
