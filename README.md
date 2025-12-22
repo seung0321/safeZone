@@ -1,6 +1,6 @@
-# SafeRoute Server - AI 기반 안전 경로 추천 백엔드 API
+# SafeZone Server - AI 기반 안전 경로 추천 백엔드 API
 
-**SafeZone-db**는 모바일 앱 **SafeZone-app**을 위한 백엔드 서버로,  
+**SafeZone**은 모바일 앱 **SafeZone-app**을 위한 백엔드 서버로,  
 사용자의 현재 위치부터 목적지까지 CCTV, 가로등, 범죄 데이터 등을 분석하여  
 가장 **안전한 도보 경로**를 계산하고 제공하는 RESTful API입니다.
 
@@ -8,7 +8,7 @@
 
 ---
 
-## ✨ 주요 기능
+##  주요 기능
 
 ### 1. 인증 / 사용자 관리 (Auth / User)
 - 회원가입 / 로그인 / 로그아웃
@@ -41,7 +41,7 @@
 
 ---
 
-## 🏗 아키텍처 개요
+##  아키텍처 개요
 
 ```
 Mobile App (React Native, SafeRoute)
@@ -62,7 +62,7 @@ PostgreSQL (Prisma ORM)
 
 ---
 
-## 🛠 기술 스택 (Tech Stack)
+##  기술 스택 (Tech Stack)
 
 ### Backend
 - **Runtime**: Node.js (ES Modules)
@@ -84,7 +84,7 @@ PostgreSQL (Prisma ORM)
 
 ---
 
-## 🔐 환경 변수 설정 (.env)
+##  환경 변수 설정 (.env)
 
 서버 루트 디렉터리에 `.env` 파일을 생성하고 아래와 같이 설정합니다.
 
@@ -112,7 +112,7 @@ KAKAO_REST_API_KEY=your_kakao_rest_api_key
 
 ---
 
-## 🚀 로컬 개발 환경 실행 방법
+##  로컬 개발 환경 실행 방법
 
 ### 1. 저장소 클론
 
@@ -156,12 +156,12 @@ npm start
 서버가 정상 실행되면 콘솔에 다음과 비슷한 메시지가 출력됩니다.
 
 ```bash
-🚀 Server running
+ Server running
 ```
 
 ---
 
-## 📂 폴더 구조 예시
+##  폴더 구조 예시
 
 > 실제 프로젝트 구조와 비슷한 형태로, 주요 역할을 이해하기 쉽게 정리했습니다.
 
@@ -212,4 +212,5 @@ server/
 ├─ package.json
 └─ README.md
 ```
+
 
